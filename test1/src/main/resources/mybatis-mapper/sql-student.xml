@@ -8,5 +8,8 @@
 		FROM STUDENT
 		WHERE STU_NAME = #{keyword}
 	</select>
-	
+	<select id="stuList" parameterType="hashmap" resultType="com.example.test1.model.Student">
+		SELECT *
+		FROM STUDENT
+	</select>
 </mapper>

@@ -4,7 +4,21 @@ public class Student {
 	private String stuNo;
 	private String stuDept;
 	private String stuName;
+	private String stuGrade;
+	private String stuGender;
 	
+	public String getStuGrade() {
+		return stuGrade;
+	}
+	public void setStuGrade(String stuGrade) {
+		this.stuGrade = stuGrade;
+	}
+	public String getStuGender() {
+		return stuGender;
+	}
+	public void setStuGender(String stuGender) {
+		this.stuGender = stuGender;
+	}
 	public String getStuNo() {
 		return stuNo;
 	}

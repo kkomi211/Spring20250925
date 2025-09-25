@@ -54,7 +54,7 @@
                     type: "POST",
                     data: param,
                     success: function (data) {
-						
+						console.log(data)
                     }
                 });
             }

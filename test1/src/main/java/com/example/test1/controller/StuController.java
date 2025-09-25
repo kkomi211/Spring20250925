@@ -19,10 +19,9 @@ public class StuController {
 	@Autowired
 	StuService stuService;
 	
-	
 	@RequestMapping("/stu-list.do") 
-    public String login(Model model) throws Exception{
-
+    public String login(Model model) throws Exception{ 
+		
         return "/stu-list";
     }
 	

@@ -10,20 +10,25 @@ import com.example.test1.model.Student;
 
 @Service
 public class StuService {
+
 	@Autowired
 	StuMapper stuMapper;
-	
 	
 	public HashMap<String, Object> stuInfo(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		System.out.println(map);
-		Student student = stuMapper.stuInfo(resultMap);
-		if(student != null) {
-			System.out.println(student.getStuNo());
-			System.out.println(student.getStuDept());
-			System.out.println(student.getStuName());
+		System.out.println("service => " + map);
+		Student stu = stuMapper.stuInfo(map);
+		if(stu != null) {
+			System.out.println(stu.getStuNo());
+			System.out.println(stu.getStuDept());
+			System.out.println(stu.getStuName());
 		}
+		
+		resultMap.put("info", stu);
+		resultMap.put("result", "success");
+		
+		
 		return resultMap;
 	}
 }

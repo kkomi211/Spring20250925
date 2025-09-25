@@ -10,3 +10,7 @@ import com.example.test1.model.Student;
 public interface StuMapper {
 	Student stuInfo(HashMap<String, Object> map);
 }
+
+
+
+

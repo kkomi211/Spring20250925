@@ -8,8 +8,5 @@
 		FROM STUDENT
 		WHERE STU_NAME = #{keyword}
 	</select>
+	
 </mapper>
-
-
-
-

@@ -12,4 +12,16 @@
 		SELECT *
 		FROM STUDENT
 	</select>
+	<delete id="deleteStu" parameterType="hashmap">
+		DELETE FROM STUDENT
+		WHERE STU_NO = #{stuNo}
+	</delete>
+	
+	<select id="stuView" parameterType="hashmap" resultType="com.example.test1.model.Student">
+		SELECT S.STU_NO, STU_NAME, STU_DEPT, DECODE(AVG(ENR_GRADE),NULL,0, AVG(ENR_GRADE)) AS AVG_GRADE
+		FROM STUDENT S
+		LEFT JOIN ENROL E ON S.STU_NO = E.STU_NO
+		GROUP BY S.STU_NO, STU_NAME, STU_DEPT
+		HAVING S.STU_NO = #{stuNo}
+	</select>
 </mapper>

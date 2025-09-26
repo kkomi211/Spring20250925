@@ -21,45 +21,48 @@
         tr:nth-child(even){
             background-color: azure;
         }
+        td input{
+            width: 500px;
+        }
+        textarea {
+            width: 500px;
+            height: 500px;
+        }
     </style>
 </head>
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
         <div>
-            <select v-model="kind" @change="fnList">
-                <option value="">:: 전체 ::</option>
-                <option value="1">:: 공지사항 ::</option>
-                <option value="2">:: 자유게시판 ::</option>
-                <option value="3">:: 문의게시판 ::</option>
-            </select>
-            <select v-model="order" @change="fnList">
-                <option value="1">:: 번호순 ::</option>
-                <option value="2">:: 제목순 ::</option>
-                <option value="3">:: 조회수 ::</option>
-            </select>
+            <table>
+                <tr>
+                    <th>제목</th>
+                    <td><input v-model="info.title"></td>
+                </tr>
+                <tr>
+                    <th>작성자</th>
+                    <td>{{info.userId}}</td>
+                </tr>
+                <tr>
+                    <th>작성일</th>
+                    <td>{{info.cdate}}</td>
+                </tr>
+                <tr>
+                    <th>조회수</th>
+                    <td>{{info.cnt}}</td>
+                </tr>
+                <tr>
+                    <th>좋아요 수</th>
+                    <td>{{info.favorite}}</td>
+                </tr>
+                <tr>
+                    <th>내용</th>
+                    <td><textarea v-model="info.contents"></textarea></td>
+                </tr>
+            </table>
         </div>
-        <div>
-			<table>
-				<tr>
-					<th>번호</th>
-					<th>제목</th>
-					<th>작성자</th>
-					<th>조회수</th>
-					<th>작성일</th>
-					<th>삭제</th>
-				</tr>
-				<tr v-for="item in list">
-					<td>{{item.boardNo}}</td>
-					<td><a href="javascript:;" @click="fnView(item.boardNo)">{{item.title}}</a></td>
-					<td>{{item.userId}}</td>
-					<td>{{item.cnt}}</td>
-					<td>{{item.cdate}}</td>
-                    <td><button @click="fnDelete(item.boardNo)">삭제</button></td>
-				</tr>
-			</table>
-		</div>
-        <button @click="fnAdd">글 작성하기</button>
+        <button @click="fnEdit">수정하기</button>
+        <button @click="fnBack">돌아가기</button>
     </div>
 </body>
 </html>
@@ -69,56 +72,60 @@
         data() {
             return {
                 // 변수 - (key : value)
-                list : [],
-                kind : "",
-                order : 1
+                test : "${test}",
+                boardNo : "${boardNo}",
+                info : {}
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnList: function () {
+            fnInfo: function () {
                 let self = this;
                 let param = {
-                    kind : self.kind,
-                    order : self.order
+                    boardNo : self.boardNo
                 };
                 $.ajax({
-                    url: "board-list.dox",
+                    url: "board-view.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-                        self.list = data.list;
+                        console.log(data);
+                        self.info = data.info;
+                        
+                        
                     }
                 });
             },
-            fnDelete(boardNo){
+            fnBack(){
+                let self = this;
+                pageChange("board-view.do", {boardNo : self.boardNo});
+            },
+            fnEdit(){
                 let self = this;
                 let param = {
-                    boardNo : boardNo
+                    title : self.info.title,
+                    contents : self.info.contents,
+                    boardNo : self.boardNo
                 };
                 $.ajax({
-                    url: "board-delete.dox",
+                    url: "board-edit.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-                        alert("삭제되었습니다!");
-                        self.fnList();
+                        alert("수정되었어요!");
+                        self.fnBack()
+                        
+                        
                     }
                 });
-            },
-            fnAdd(){
-                location.href="board-add.do"
-            },
-            fnView(boardNo){
-                pageChange("board-view.do", {boardNo : boardNo});
             }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            self.fnList();
+            self.fnInfo();
         }
     });
 

@@ -13,5 +13,7 @@ public interface StuMapper {
 	
 	List<Student> stuList(HashMap<String, Object> map);
 	
+	int deleteStu(HashMap<String, Object> map);
 	
+	Student stuView(HashMap<String, Object> map);
 }

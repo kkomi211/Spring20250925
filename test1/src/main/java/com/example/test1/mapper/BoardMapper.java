@@ -11,5 +11,11 @@ import com.example.test1.model.Board;
 public interface BoardMapper {
 	List<Board> boardList(HashMap<String, Object> map);
 	
+	int boardDelete(HashMap<String, Object> map);
 	
+	int insertBoard(HashMap<String, Object> map);
+	
+	Board boardInfo(HashMap<String, Object> map);
+	
+	int boardEdit(HashMap<String, Object> map);
 }

@@ -21,35 +21,42 @@
         tr:nth-child(even){
             background-color: azure;
         }
+        
     </style>
 </head>
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-		<div>
-			<input placeholder="검색어" v-model="keyword">
-			<button @click="fnInfo">검색</button>
-		</div>
-		<div>
-			<table>
-				<tr>
-					<th>학번</th>
-					<th>이름</th>
-					<th>학과</th>
-					<th>학년</th>
-					<th>성별</th>
-					<th>삭제</th>
-				</tr>
-				<tr v-for="item in list">
-					<td>{{item.stuNo}}</td>
-					<td><a href="javascript:;" @click="fnView(item.stuNo)">{{item.stuName}}</a></td>
-					<td>{{item.stuDept}}</td>
-					<td>{{item.stuGrade}}</td>
-					<td>{{item.stuGender}}</td>
-					<td><button @click="fnDelete(item.stuNo)">삭제</button></td>
-				</tr>
-			</table>
-		</div>
+        <div>
+            <table>
+                <tr>
+                    <th>제목</th>
+                    <td>{{info.title}}</td>
+                </tr>
+                <tr>
+                    <th>작성자</th>
+                    <td>{{info.userId}}</td>
+                </tr>
+                <tr>
+                    <th>작성일</th>
+                    <td>{{info.cdate}}</td>
+                </tr>
+                <tr>
+                    <th>조회수</th>
+                    <td>{{info.cnt}}</td>
+                </tr>
+                <tr>
+                    <th>좋아요 수</th>
+                    <td>{{info.favorite}}</td>
+                </tr>
+                <tr>
+                    <th>내용</th>
+                    <td>{{info.contents}}</td>
+                </tr>
+            </table>
+        </div>
+        <button @click="fnEdit">수정하기</button>
+        <button @click="fnBack">돌아가기</button>
     </div>
 </body>
 </html>
@@ -59,65 +66,43 @@
         data() {
             return {
                 // 변수 - (key : value)
-				keyword : "",
-				list : []
+                test : "${test}",
+                boardNo : "${boardNo}",
+                info : {}
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnList: function () {
-                let self = this;
-                let param = {};
-                $.ajax({
-                    url: "stu-list.dox",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-						console.log(data)
-						self.list = data.list;
-                    }
-                });
-            },
             fnInfo: function () {
                 let self = this;
                 let param = {
-					keyword : self.keyword
-				};
+                    boardNo : self.boardNo
+                };
                 $.ajax({
-                    url: "stu-info.dox",
+                    url: "board-view.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-						console.log(data)
+                        console.log(data);
+                        self.info = data.info;
+                        
+                        
                     }
                 });
             },
-            fnDelete: function (stuNo) {
+            fnBack(){
+                location.href="board-list.do";
+            },
+            fnEdit(){
                 let self = this;
-                let param = {
-					stuNo : stuNo
-				};
-                $.ajax({
-                    url: "stu-delete.dox",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-						alert("삭제되었습니다!");
-                        self.fnList();
-                    }
-                });
-            },
-            fnView(stuNo){
-                pageChange("stu-view.do", {stuNo : stuNo});
+                pageChange("board-edit.do", {boardNo : self.boardNo});
             }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-			self.fnList();
+            self.fnInfo();
         }
     });
 

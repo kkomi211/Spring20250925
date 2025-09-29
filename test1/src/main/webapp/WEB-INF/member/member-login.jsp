@@ -20,36 +20,21 @@
         tr:nth-child(even){
             background-color: azure;
         }
-        td input{
-            width: 300px;
-        }
-        td textarea{
-            width: 300px;
-            height: 300px;
-        }
     </style>
 </head>
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-         <div>
-            <table>
-                <tr>
-                    <th>제목</th>
-                    <td><input v-model="title" type="text"></td>                    
-                </tr>
-                <tr>
-                    <th>작성자</th>
-                    <td><input v-model="sessionId" type="text" disabled></td>                    
-                </tr>
-                <tr>
-                    <th>내용</th>
-                    <td><textarea v-model="contents"></textarea></td>                    
-                </tr>
-            </table>
-         </div>
-         <button @click="fnAdd">작성</button>
-         <button @click="fnBack">돌아가기</button>
+        <div>
+            <label>아이디 : <input v-model="id"></label>
+        </div>
+        <div>
+            <label>비밀번호 : <input type="password" v-model="pwd"></label>
+        </div>
+        <div>
+            <button @click="fnLogin">로그인</button>
+            <button @click="fnJoin">회원가입</button>
+        </div>
     </div>
 </body>
 </html>
@@ -59,46 +44,38 @@
         data() {
             return {
                 // 변수 - (key : value)
-                title : "",
-                contents : "",
-                sessionId : "${sessionId}"
+                id : "",
+                pwd : ""
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnAdd: function () {
+            fnLogin: function () {
                 let self = this;
                 let param = {
-                    title : self.title,
-                    userId : self.sessionId,
-                    contents : self.contents
+                    id : self.id,
+                    pwd : self.pwd
                 };
                 $.ajax({
-                    url: "board-insert.dox",
+                    url: "/member/login.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-                        alert("작성이 완료되었습니다!");
-                        self.fnBack();
+                        alert(data.msg); 
+                        if(data.result == "success"){
+                            location.href="/main.do";
+                        }   
                     }
                 });
             },
-            fnBack(){
-                location.href="board-list.do"
-            },
-            fnLogin(){
-                let self = this;
-                if(self.sessionId == ""){
-                    alert("로그인후 이용해 주세요");
-                    location.href="/member/login.do";
-                }
+            fnJoin: function () {
+                location.href="/member/join.do"
             }
-        }, // methods
+        }, // methods   
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            self.fnLogin();
         }
     });
 

@@ -6,7 +6,7 @@
 	<select id="userLogin" parameterType="hashmap" resultType="com.example.test1.model.User">
 		SELECT *
 		FROM TBL_USER
-		WHERE USERID = #{userId} AND PASSWORD = #{pwd}
+		WHERE USERID = #{id} AND PASSWORD = #{pwd}
 	</select>
 </mapper>
 

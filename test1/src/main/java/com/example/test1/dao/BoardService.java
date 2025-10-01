@@ -20,9 +20,11 @@ public class BoardService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		List<Board> list = boardmapper.boardList(map);
+		int cnt = boardmapper.selectBoardCnt(map);
 		
 		
 		resultMap.put("list", list);
+		resultMap.put("cnt", cnt);
 		resultMap.put("result", "success");
 		
 		
@@ -72,4 +74,52 @@ public class BoardService {
 		
 		return resultMap;
 	}
+	
+	public HashMap<String, Object> insertComment(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = boardmapper.insertComment(map);
+		
+		resultMap.put("result", "success");
+		
+		
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> BoardComment(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		List<Board> list = boardmapper.boardComment(map);
+		
+		
+		resultMap.put("list", list);
+		resultMap.put("result", "success");
+		
+		
+		return resultMap;
+	}
+	
+	
+	public HashMap<String, Object> upCnt(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = boardmapper.boardCnt(map);
+		
+		resultMap.put("result", "success");
+		
+		
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> commentDelete(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = boardmapper.commentDelete(map);
+		
+		resultMap.put("result", "success");
+		
+		
+		return resultMap;
+	}
+	
 }

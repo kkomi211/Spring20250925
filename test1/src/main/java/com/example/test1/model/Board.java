@@ -9,9 +9,16 @@ public class Board {
 	private String favorite;
 	private String kind;
 	private String cdate;
+	private int commentCnt;
 	
 	
 	
+	public int getCommentCnt() {
+		return commentCnt;
+	}
+	public void setCommentCnt(int commentCnt) {
+		this.commentCnt = commentCnt;
+	}
 	public String getCdate() {
 		return cdate;
 	}

@@ -57,6 +57,28 @@
         </div>
         <button @click="fnEdit">수정하기</button>
         <button @click="fnBack">돌아가기</button>
+        <div>
+            <table>
+                <tr v-for="item in commentList">
+                    <th>{{item.userId}}</th>
+                    <td>{{item.contents}}</td>
+                    <td><button v-if="item.userId == sessionId || status == 'A'" @click="fnDeleteComment">삭제</button></td>
+                    <td><button v-if="item.userId == sessionId || status == 'A'" @click="fnEditComment">수정</button></td>
+                </tr>
+            </table>
+        </div>
+        <div v-if="sessionId != ''">
+            <table>
+                <tr>
+                    <th>{{sessionId}}</th>
+                    <td><input v-model="comment" style="width: 500px;"></td>
+                    <td><button @click="fnAddComment">댓글 작성하기</button></td>
+                </tr>
+                <tr>
+
+                </tr>
+            </table>
+        </div>
     </div>
 </body>
 </html>
@@ -68,7 +90,12 @@
                 // 변수 - (key : value)
                 test : "${test}",
                 boardNo : "${boardNo}",
-                info : {}
+                sessionId : "${sessionId}",
+                sessionName : "${sessionName}",
+                status : "${status}",
+                info : {},
+                comment : "",
+                commentList : []
             };
         },
         methods: {
@@ -97,12 +124,92 @@
             fnEdit(){
                 let self = this;
                 pageChange("board-edit.do", {boardNo : self.boardNo});
+            },
+            fnAddComment(){
+                let self = this;
+                let param = {
+                    boardNo : self.boardNo,
+                    userId : self.sessionId,
+                    contents : self.comment
+                };
+                $.ajax({
+                    url: "add-comment.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                        alert("댓글이 작성되었습니다.")
+                        self.comment = "";
+                        self.fnComment();
+                        
+                        
+                    }
+                });
+            },
+            fnComment(){
+                let self = this;
+                let param = {
+                    boardNo : self.boardNo
+                };
+                $.ajax({
+                    url: "board-comment.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        console.log(data.list);
+                        self.commentList = data.list;
+                        
+                        
+                    }
+                });
+            },
+            fnCntUp(){
+                let self = this;
+                let param = {
+                    boardNo : self.boardNo
+                };
+                $.ajax({
+                    url: "board-cnt.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        self.fnInfo();
+                        
+                        
+                    }
+                });
+            },
+            fnDeleteComment(){
+                let self = this;
+                let param = {
+                    commentNo : self.commentNo
+                };
+                $.ajax({
+                    url: "comment-delete.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        self.fnInfo();
+                        self.fnComment();
+                        
+                        
+                    }
+                });
+            },
+            fnEditComment(){
+                
             }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            self.fnInfo();
+            self.fnCntUp();
+            
+            self.fnComment();
         }
     });
 

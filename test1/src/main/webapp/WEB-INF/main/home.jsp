@@ -40,7 +40,7 @@
             return {
                 // 변수 - (key : value)
                 sessionId : "${sessionId}",
-                sessionName : "${name}",
+                sessionName : "${sessionName}",
                 status : "${status}"
             };
         },

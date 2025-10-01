@@ -27,7 +27,7 @@ public class MemberService {
 			
 			if(member != null) {
 				session.setAttribute("sessionId", member.getUserId());
-				session.setAttribute("name", member.getName());
+				session.setAttribute("sessionName", member.getName());
 				session.setAttribute("status", member.getStatus());
 			}
 			
@@ -54,6 +54,14 @@ public class MemberService {
 			
 //			session.removeAttribute("sessionId"); 1개씩 삭제
 			session.invalidate(); // 세션정보 전체 삭제
+			return resultMap;
+		}
+		
+		public HashMap<String, Object> join(HashMap<String, Object> map) {
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			int cnt = memberMapper.memberJoin(map);
+			resultMap.put("result","success");
+			
 			return resultMap;
 		}
 		

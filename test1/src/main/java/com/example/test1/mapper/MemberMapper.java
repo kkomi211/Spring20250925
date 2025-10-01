@@ -12,4 +12,6 @@ public interface MemberMapper {
 	
 	
 	Member memberCheck(HashMap<String, Object> map);
+	
+	int memberJoin(HashMap<String, Object> map);
 }

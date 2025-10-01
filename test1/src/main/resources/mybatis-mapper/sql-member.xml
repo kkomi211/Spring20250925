@@ -17,7 +17,7 @@
 	
 	<insert id="memberJoin" parameterType="hashmap">
 		INSERT INTO TBL_USER
-		VALUES (#{id}, #{pwd}, NAME, BIRTH, NICKNAME, PROFILE_IMG, ADDRESS, PHONE, EMAIL, GENDER, STATUS, CDATETIME, UDATETIME)
+		VALUES (#{id}, #{pwd}, #{name}, NULL, NULL, NULL, #{addr}, #{phone}, NULL, #{gender}, #{status}, SYSDATE, SYSDATE)
 	</insert>
 </mapper>
 

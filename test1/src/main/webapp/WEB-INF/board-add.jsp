@@ -7,6 +7,8 @@
     <title>Document</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <style>
         table, tr, td, th{
             border : 1px solid black;
@@ -23,8 +25,8 @@
         td input{
             width: 300px;
         }
-        td textarea{
-            width: 300px;
+        #editor{
+            width: 450px;
             height: 300px;
         }
     </style>
@@ -44,7 +46,7 @@
                 </tr>
                 <tr>
                     <th>내용</th>
-                    <td><textarea v-model="contents"></textarea></td>                    
+                    <td><div id="editor"></div></td>                    
                 </tr>
             </table>
          </div>
@@ -99,6 +101,23 @@
             // 처음 시작할 때 실행되는 부분
             let self = this;
             self.fnLogin();
+            var quill = new Quill('#editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                        ['bold', 'italic', 'underline'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['link', 'image'],
+                        ['clean']
+                    ]
+                }
+            });
+
+            // 에디터 내용이 변경될 때마다 Vue 데이터를 업데이트
+            quill.on('text-change', function() {
+                self.contents = quill.root.innerHTML;
+            });
         }
     });
 

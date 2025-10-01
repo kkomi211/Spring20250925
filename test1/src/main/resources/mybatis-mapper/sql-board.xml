@@ -4,23 +4,78 @@
 
 <mapper namespace="com.example.test1.mapper.BoardMapper">
 	<select id="boardList" parameterType="hashmap" resultType="com.example.test1.model.Board">
-		SELECT B.*, TO_CHAR(CDATETIME, 'YYYY-MM-DD') AS CDATE
+		SELECT 
+		    B.*, 
+		    DECODE(
+				TO_CHAR(CDATETIME, 'YYYY-MM-DD'), 
+				TO_CHAR(SYSDATE, 'YYYY-MM-DD'), 
+				TO_CHAR(CDATETIME, 'HH24:MI:SS'), 
+				TO_CHAR(CDATETIME, 'YYYY-MM-DD'
+			)) AS CDATE, 
+		    NVL(CCNT, 0) AS COMMENTCNT
 		FROM TBL_BOARD B
-	 	WHERE 1=1
+		LEFT JOIN (
+		    SELECT BOARDNO, COUNT(*) AS CCNT
+		    FROM TBL_COMMENT
+		    GROUP BY BOARDNO
+		) T ON T.BOARDNO = B.BOARDNO
+		WHERE 1=1
 		<if test="kind != '' and kind != null">
 			AND KIND = #{kind}
 		</if>
-		ORDER BY
+		
+		<if test="searchOption == 'all'">
+			AND (
+				TITLE LIKE '%' || #{keyword} || '%' OR
+				USERID LIKE '%' || #{keyword} || '%'
+			)
+		</if>
+		<if test="searchOption == 'title'">
+			AND TITLE LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="searchOption == 'id'">
+			AND USERID LIKE '%' || #{keyword} || '%'
+		</if>
+		
 		<if test="order == 1">
-			BOARDNO ASC
+			ORDER BY B.BOARDNO ASC
 		</if>
 		<if test="order == 2">
-			TITLE ASC
+			ORDER BY TITLE ASC
 		</if>
 		<if test="order == 3">
-			CNT DESC
+			ORDER BY CNT DESC
 		</if>
+		<if test="order == 4">
+			ORDER BY CDATETIME DESC
+		</if>
+		OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+		
 	</select>
+	
+	<select id="selectBoardCnt" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) 
+		FROM TBL_BOARD
+		WHERE 1=1
+		<if test="kind != '' and kind != null">
+			AND KIND = #{kind}
+		</if>
+		
+		<if test="searchOption == 'all'">
+			AND (
+				TITLE LIKE '%' || #{keyword} || '%' OR
+				USERID LIKE '%' || #{keyword} || '%'
+			)
+		</if>
+		<if test="searchOption == 'title'">
+			AND TITLE LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="searchOption == 'id'">
+			AND USERID LIKE '%' || #{keyword} || '%'
+		</if>
+		
+	</select>
+	
 	<delete id="boardDelete" parameterType="hashmap">
 		DELETE FROM TBL_BOARD
 		WHERE BOARDNO = #{boardNo}
@@ -41,4 +96,27 @@
 		SET TITLE = #{title}, CONTENTS = #{contents}, UDATETIME = SYSDATE
 		WHERE BOARDNO = #{boardNo}
 	</update>	
+	
+	<insert id="insertComment" parameterType="hashmap">
+		INSERT INTO TBL_COMMENT
+		VALUES (COMMENT_SEQ.NEXTVAL, #{boardNo}, #{contents}, #{userId}, 0, NULL, SYSDATE, SYSDATE)
+	</insert>
+	
+	<select id="boardComment" parameterType="hashmap" resultType="com.example.test1.model.Comment">
+		SELECT *
+		FROM TBL_COMMENT
+		WHERE BOARDNO = #{boardNo}
+		ORDER BY CDATETIME DESC
+	</select>
+	
+	<update id="boardCnt" parameterType="hashmap">
+		UPDATE TBL_BOARD
+		SET CNT = CNT + 1
+		WHERE BOARDNO = #{boardNo}
+	</update>
+	
+	<delete id="commentDelete" parameterType="hashmap">
+		DELETE FROM TBL_COMMENT
+		WHERE COMMENTNO = #{commentNo}
+	</delete>
 </mapper>

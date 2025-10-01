@@ -7,7 +7,14 @@ public class Student {
 	private String stuGrade;
 	private String stuGender;
 	private String avgGrade;
+	private String totalAvg;
 	
+	public String getTotalAvg() {
+		return totalAvg;
+	}
+	public void setTotalAvg(String totalAvg) {
+		this.totalAvg = totalAvg;
+	}
 	public String getAvgGrade() {
 		return avgGrade;
 	}

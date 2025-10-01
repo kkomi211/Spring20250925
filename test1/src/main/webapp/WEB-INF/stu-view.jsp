@@ -39,6 +39,10 @@
                     <th>시험평균점수</th>
                     <td>{{info.avgGrade}}</td>
                 </tr>
+                <tr>
+                    <th>전체평균점수</th>
+                    <td>{{info.totalAvg}}</td>
+                </tr>
             </table>
         </div>
     </div>

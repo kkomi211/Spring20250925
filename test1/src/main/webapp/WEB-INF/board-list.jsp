@@ -21,12 +21,30 @@
         tr:nth-child(even){
             background-color: azure;
         }
+        .index{
+            margin: 0px 20px;
+        }
+        #app{
+            text-align: center;
+        }
+        .active{
+            color: black;
+            font-weight: bold;
+        }
+        .cursor{
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
         <div>
+            <select v-model="pageSize" @change="fnList">
+                <option value="5">5개씩</option>
+                <option value="10">10개씩</option>
+                <option value="15">15개씩</option>
+            </select>
             <select v-model="kind" @change="fnList">
                 <option value="">:: 전체 ::</option>
                 <option value="1">:: 공지사항 ::</option>
@@ -37,10 +55,11 @@
                 <option value="1">:: 번호순 ::</option>
                 <option value="2">:: 제목순 ::</option>
                 <option value="3">:: 조회수 ::</option>
+                <option value="4">:: 최신순 ::</option>
             </select>
         </div>
         <div>
-			<table>
+			<table style="margin: 0px auto;">
 				<tr>
 					<th>번호</th>
 					<th>제목</th>
@@ -51,13 +70,25 @@
 				</tr>
 				<tr v-for="item in list">
 					<td>{{item.boardNo}}</td>
-					<td><a href="javascript:;" @click="fnView(item.boardNo)">{{item.title}}</a></td>
+					<td>
+                        <a href="javascript:;" @click="fnView(item.boardNo)">{{item.title}}</a>
+                        <span v-if="item.commentCnt != 0" style="color:red;"> [{{item.commentCnt}}]</span>
+                    </td>
 					<td>{{item.userId}}</td>
 					<td>{{item.cnt}}</td>
 					<td>{{item.cdate}}</td>
                     <td><button v-if="item.userId == sessionId || status == 'A'" @click="fnDelete(item.boardNo)">삭제</button></td>
 				</tr>
 			</table>
+            <div>
+                <a @click="fnPage('-')" class="cursor" v-if="page != 1">◀</a>
+                <a href="javascript:;" v-for="num in index" class="index" @click="fnPage(num)">
+                    <span :class="{active : page == num}">{{num}}</span>
+                    <!-- <span v-if="num == page" class="active">{{num}}</span>
+                    <span v-else>{{num}}</span> -->
+                </a>
+                <a @click="fnPage('+')" class="cursor" v-if="page != index">▶</a>
+            </div>
 		</div>
         <button @click="fnAdd">글 작성하기</button>
     </div>
@@ -71,10 +102,13 @@
                 // 변수 - (key : value)
                 list : [],
                 kind : "",
-                order : 1,
+                order : 4,
                 sessionId : "${sessionId}",
                 sessionName : "${sessionName}",
-                status : "${status}"
+                status : "${status}",
+                pageSize : 5, // 한페이지에 출력할 개수
+                page : 1, // 현재 페이지 
+                index : 0 // 전체 페이지
             };
         },
         methods: {
@@ -83,7 +117,9 @@
                 let self = this;
                 let param = {
                     kind : self.kind,
-                    order : self.order
+                    order : self.order,
+                    pageSize : self.pageSize,
+                    page : self.pageSize * (self.page - 1)
                 };
                 $.ajax({
                     url: "board-list.dox",
@@ -91,7 +127,9 @@
                     type: "POST",
                     data: param,
                     success: function (data) {
+                        console.log(data);
                         self.list = data.list;
+                        self.index = Math.ceil(data.cnt / self.pageSize);
                     }
                 });
             },
@@ -116,6 +154,26 @@
             },
             fnView(boardNo){
                 pageChange("board-view.do", {boardNo : boardNo});
+            },
+            fnPage(page){
+                let self = this;
+                if(page == "+"){
+                    if(self.page + 1 > self.index){
+                        return;
+                    }
+                    self.page++;
+                    self.fnList();
+                } else if(page == "-"){
+                    if(self.page - 1 == 0){
+                        return;
+                    }
+                    self.page--;
+                    self.fnList();
+                } else {
+                    let self = this;
+                    self.page = page;
+                    self.fnList();
+                }
             }
         }, // methods
         mounted() {

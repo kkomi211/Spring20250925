@@ -30,10 +30,21 @@
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
         <div>
             도/특별시 :
-            <select @change="fnList" v-model="si">
+            <select @change="fnGuList" v-model="si">
                 <option value="">:: 전체 ::</option>
                 <option :value="list.si" v-for="list in siList">:: {{list.si}} ::</option>
             </select>
+            구 :
+            <select @change="fnDongList" v-model="gu">
+                <option value="">:: 전체 ::</option>
+                <option :value="list.gu" v-for="list in guList">:: {{list.gu}} ::</option>
+            </select>
+            동 :
+            <select v-model="dong">
+                <option value="">:: 전체 ::</option>
+                <option :value="list.dong" v-for="list in dongList">:: {{list.dong}} ::</option>
+            </select>
+            <button @click="fnList">검색</button>
         </div>
         <div>
             <table>
@@ -53,11 +64,11 @@
                 </tr>
             </table>
             <div>
-                <a @click="fnMove(-10)" v-if="pageSet != 10">◀</a>
+                <a v-if="pageSet != 10">◀</a>
                 <a v-for="num in offset" href="javascript:;" >
                     <span style="margin: 20px 15px;" :class="{active : page == num}" @click="fnPage(num)">{{num}}</span>
                 </a>
-                <a @click="fnMove(10)" v-if="pageSet != offset">▶</a>
+                <a v-if="pageSet != offset">▶</a>
             </div>
         </div>
     </div>
@@ -74,9 +85,12 @@
                 pageSize : 20,
                 offset : 0,
                 pageSet : 10,
-                offsetTen : 0,
                 siList : [],
-                si : ""
+                si : "",
+                gu : "",
+                guList : [],
+                dongList : [],
+                dong : ""
             };
         },
         methods: {
@@ -86,7 +100,9 @@
                 let param = {
                     pageSize : self.pageSize,
                     page : (self.page - 1) * self.pageSize,
-                    si : self.si
+                    si : self.si,
+                    gu : self.gu,
+                    dong : self.dong 
                 };
                 $.ajax({
                     url: "/area/list.dox",
@@ -97,8 +113,8 @@
                         console.log(data);
                         self.list = data.list;
                         self.offset = Math.ceil(data.offset / self.pageSize);
-                        self.offsetTen = Math.ceil(data.offset / 200);
-                        console.log(self.offsetTen);
+                        console.log(self.offset);
+                        self.fnGuList();
                         
                     }
                 });
@@ -107,17 +123,6 @@
                 let self = this;
                 self.page = num;
                 self.fnList();
-            },
-            fnMove(num){
-                let self = this;
-                if(self.pageSet + num > self.offset){
-                    let cnt = self.offset - self.pageSet;
-                    self.pageSet += cnt;
-                    self.fnPage(self.pageSet - 9);
-                } else{
-                    self.pageSet = self.pageSet + num;
-                    self.fnPage(self.pageSet - 9);
-                }
             },
             fnSiList: function () {
                 let self = this;
@@ -130,7 +135,43 @@
                     type: "POST",
                     data: param,
                     success: function (data) {
+                        
                         self.siList = data.list;
+                        
+                    }
+                });
+            },
+            fnGuList(){
+                let self = this;
+                let param = {
+                    si : self.si,
+                };
+                $.ajax({
+                    url: "/area/gu.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        self.gu = "";
+                        self.guList = data.list;
+                        
+                    }
+                });
+            },
+            fnDongList(){
+                let self = this;
+                let param = {
+                    si : self.si,
+                    gu : self.gu
+                };
+                $.ajax({
+                    url: "/area/dong.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        self.dong = "";
+                        self.dongList =  data.list;
                         
                     }
                 });

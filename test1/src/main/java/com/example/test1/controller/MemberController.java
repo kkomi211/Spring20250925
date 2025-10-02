@@ -41,7 +41,6 @@ public class MemberController {
 	@ResponseBody
 	public String login(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		System.out.println(map);
 		resultMap = memberService.login(map);
 		
 		return new Gson().toJson(resultMap);
@@ -51,7 +50,6 @@ public class MemberController {
 	@ResponseBody
 	public String logout(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		System.out.println(map);
 		resultMap = memberService.logout(map);
 		
 		return new Gson().toJson(resultMap);
@@ -61,7 +59,6 @@ public class MemberController {
 	@ResponseBody
 	public String idCheck(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
-		System.out.println(map);
 		resultMap = memberService.idCheck(map);
 		
 		return new Gson().toJson(resultMap);

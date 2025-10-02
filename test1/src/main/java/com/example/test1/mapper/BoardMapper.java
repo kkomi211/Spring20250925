@@ -30,4 +30,10 @@ public interface BoardMapper {
 	
 	int commentDelete(HashMap<String, Object> map);
 	
+	int boardDeleteList(HashMap<String, Object> map);
+
+	int insertBoardImg(HashMap<String, Object> map);
+	
+	List<Board> selectFileList(HashMap<String, Object> map);
+	
 }

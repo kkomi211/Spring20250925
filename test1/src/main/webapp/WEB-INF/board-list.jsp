@@ -61,6 +61,7 @@
         <div>
 			<table style="margin: 0px auto;">
 				<tr>
+                    <th><input type="checkbox" @click="fnAllCheck"></th>
 					<th>번호</th>
 					<th>제목</th>
 					<th>작성자</th>
@@ -69,6 +70,7 @@
 					<th>삭제</th>
 				</tr>
 				<tr v-for="item in list">
+                    <td><input type="checkbox" v-model="selectItem" :value="item.boardNo"></td>
 					<td>{{item.boardNo}}</td>
 					<td>
                         <a href="javascript:;" @click="fnView(item.boardNo)">{{item.title}}</a>
@@ -91,6 +93,8 @@
             </div>
 		</div>
         <button @click="fnAdd">글 작성하기</button>
+        <button @click="fnDeleteList">삭제하기</button>
+            
     </div>
 </body>
 </html>
@@ -108,7 +112,9 @@
                 status : "${status}",
                 pageSize : 5, // 한페이지에 출력할 개수
                 page : 1, // 현재 페이지 
-                index : 0 // 전체 페이지
+                index : 0, // 전체 페이지
+                selectItem : [],
+                selectFlg : false
             };
         },
         methods: {
@@ -174,6 +180,35 @@
                     self.page = page;
                     self.fnList();
                 }
+            },
+            fnAllCheck(){
+                let self = this;
+                self.selectFlg = !self.selectFlg;
+                if(self.selectFlg){
+                    self.selectItem = [];
+                    for(let i = 0; i < self.list.length; i++){
+                        self.selectItem.push(self.list[i].boardNo);
+                    }
+                } else{
+                    self.selectItem = [];
+                }
+            },
+            fnDeleteList(){
+                let self = this;
+                console.log(self.selectItem);
+                var fList = JSON.stringify(self.selectItem);
+                var param = {selectItem : fList};
+                
+                $.ajax({
+                    url: "/board/delete/list.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        alert("삭제되었습니다!");
+                        self.fnList();
+                    }
+                });
             }
         }, // methods
         mounted() {

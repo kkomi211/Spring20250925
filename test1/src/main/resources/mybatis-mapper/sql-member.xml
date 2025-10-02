@@ -15,7 +15,7 @@
 		WHERE USERID = #{id}
 	</select>
 	
-	<insert id="memberJoin" parameterType="hashmap">
+	<insert id="memberJoin" parameterType="hashmap" useGeneratedKeys="true" keyColumn="USERID" keyProperty="userId">
 		INSERT INTO TBL_USER
 		VALUES (#{id}, #{pwd}, #{name}, NULL, NULL, NULL, #{addr}, #{phone}, NULL, #{gender}, #{status}, SYSDATE, SYSDATE)
 	</insert>

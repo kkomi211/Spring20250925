@@ -46,7 +46,7 @@ public class StuService {
 		return resultMap;
 	}
 	
-	public HashMap<String, Object> deleteStuList(HashMap<String, Object> map) {
+	public HashMap<String, Object> deleteStu(HashMap<String, Object> map) {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		int cnt = stuMapper.deleteStu(map);
@@ -66,6 +66,19 @@ public class StuService {
 		
 		
 		resultMap.put("info", info);
+		resultMap.put("result", "success");
+		
+		
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> deleteStuList(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = stuMapper.deleteStuList(map);
+		
+		
+		
 		resultMap.put("result", "success");
 		
 		

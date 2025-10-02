@@ -45,6 +45,10 @@
                     <td><input v-model="sessionId" type="text" disabled></td>                    
                 </tr>
                 <tr>
+                    <th>파일첨부</th>
+                    <td><input type="file" id="file1" name="file1" accept=".jpg, .png"></td>
+                </tr>
+                <tr>
                     <th>내용</th>
                     <td><div id="editor"></div></td>                    
                 </tr>
@@ -82,6 +86,11 @@
                     data: param,
                     success: function (data) {
                         alert("작성이 완료되었습니다!");
+                        console.log(data.boardNo);
+                        var form = new FormData();
+	                    form.append( "file1",  $("#file1")[0].files[0] );
+                        form.append( "boardNo",  data.boardNo); // 임시 pk
+                        self.upload(form);
                         self.fnBack();
                     }
                 });
@@ -95,7 +104,21 @@
                     alert("로그인후 이용해 주세요");
                     location.href="/member/login.do";
                 }
-            }
+            }, 
+            upload : function(form){
+                var self = this;
+                $.ajax({
+                    url : "/fileUpload.dox"
+                , type : "POST"
+                , processData : false
+                , contentType : false
+                , data : form
+                , success:function(data) { 
+                    console.log(data);
+                    
+                }	           
+            });
+}
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분

@@ -60,6 +60,9 @@ public class MemberService {
 		public HashMap<String, Object> join(HashMap<String, Object> map) {
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
 			int cnt = memberMapper.memberJoin(map);
+			System.out.println(map);
+			
+			resultMap.put("userId", map.get("userId"));	
 			resultMap.put("result","success");
 			
 			return resultMap;

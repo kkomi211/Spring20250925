@@ -51,7 +51,13 @@
                 </tr>
                 <tr>
                     <th>내용</th>
-                    <td>{{info.contents}}</td>
+                    <td>
+                        <img v-for="item in fileList" :src="item.filePath">
+                        <br>
+                        <div v-html="info.contents">
+
+                        </div>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -95,7 +101,8 @@
                 status : "${status}",
                 info : {},
                 comment : "",
-                commentList : []
+                commentList : [],
+                fileList : []
             };
         },
         methods: {
@@ -113,6 +120,7 @@
                     success: function (data) {
                         console.log(data);
                         self.info = data.info;
+                        self.fileList = data.fileList;
                         
                         
                     }

@@ -15,4 +15,8 @@ public interface AreaMapper {
 	int offset(HashMap<String, Object> map);
 	
 	List<Area> selectSiList(HashMap<String, Object> map);
+	
+	List<Area> selectGuList(HashMap<String, Object> map);
+	
+	List<Area> selectDongList(HashMap<String, Object> map);
 }

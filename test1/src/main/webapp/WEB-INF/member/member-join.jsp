@@ -43,6 +43,10 @@
             <label>이름 : <input v-model="name"></label>
         </div>
         <div>
+            프로필 사진 : 
+            <input type="file" id="file1" name="file1" accept=".jpg, .png">
+        </div>
+        <div>
             <label>주소 : <input v-model="addr"></label><button @click="fnAddr">주소검색</button>
         </div>
         <div v-if="!joinFlg">
@@ -170,10 +174,10 @@
                     return;
                 }
                 
-                if(!self.joinFlg){
-                    alert("문자 인증을 해주세요");
-                    return;
-                }
+                // if(!self.joinFlg){
+                //     alert("문자 인증을 해주세요");
+                //     return;
+                // }
                 let param = {
                     id : self.id,
                     pwd : self.pwd,
@@ -191,9 +195,27 @@
                     success: function (data) {
                         console.log(data);
                         alert("가입이 완료되었습니다");
-                        location.href="/member/login.do"
+                        var form = new FormData();
+	                    form.append( "file1",  $("#file1")[0].files[0] );
+                        form.append( "userId",  data.userId); // 임시 pk
+                        self.upload(form);
+                        // location.href="/member/login.do"
                         
                     }
+                });
+            },
+            upload : function(form){
+                var self = this;
+                $.ajax({
+                    url : "/UserFileUpload.dox"
+                , type : "POST"
+                , processData : false
+                , contentType : false
+                , data : form
+                , success:function(data) { 
+                    console.log(data);
+                    
+                }	           
                 });
             },
             fnAddr(){

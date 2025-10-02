@@ -30,4 +30,10 @@ public class UserService {
 		
 		return resultMap;
 	}
+
+
+	public HashMap<String, Object> userFile(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -42,4 +42,13 @@ public class UserController {
 		return new Gson().toJson(resultMap);
 	}
 	
+	@RequestMapping(value = "/UserFileUpload.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String userFile(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = userService.userFile(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
 }

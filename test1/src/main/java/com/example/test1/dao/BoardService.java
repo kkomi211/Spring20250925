@@ -47,6 +47,7 @@ public class BoardService {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		int cnt = boardmapper.insertBoard(map);
 		
+		resultMap.put("boardNo", map.get("boardNo"));
 		resultMap.put("result", "success");
 		
 		
@@ -57,6 +58,10 @@ public class BoardService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		Board board = boardmapper.boardInfo(map);
+		List<Board> fileList = boardmapper.selectFileList(map);
+		
+		
+		resultMap.put("fileList", fileList);
 		resultMap.put("info", board);
 		resultMap.put("result", "success");
 		
@@ -120,6 +125,24 @@ public class BoardService {
 		
 		
 		return resultMap;
+	}
+	
+	public HashMap<String, Object> boardtDeleteList(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int cnt = boardmapper.boardDeleteList(map);
+		
+		resultMap.put("result", "success");
+		
+		
+		return resultMap;
+	}
+
+	public void addBoardImg(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		
+		int cnt = boardmapper.insertBoardImg(map);
+		
 	}
 	
 }

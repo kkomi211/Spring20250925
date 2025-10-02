@@ -1,6 +1,7 @@
 package com.example.test1.controller;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.test1.dao.StuService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 @Controller
@@ -59,7 +62,7 @@ public class StuController {
 	public String studelete(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
-		resultMap = stuService.deleteStuList(map);
+		resultMap = stuService.deleteStu(map);
 		
 		return new Gson().toJson(resultMap);
 	}
@@ -70,6 +73,21 @@ public class StuController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
 		resultMap = stuService.stuView(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/stu/deleteList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String deleteList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		String json = map.get("selectItem").toString();
+		ObjectMapper mapper = new ObjectMapper();
+		List<Object> list = mapper.readValue(json, new TypeReference<List<Object>>(){});
+		map.put("list", list);
+		System.out.println(map);
+		resultMap = stuService.deleteStuList(map);
 		
 		return new Gson().toJson(resultMap);
 	}

@@ -19,6 +19,18 @@ public class MemberController {
 	@Autowired
 	MemberService memberService;
 	
+	@RequestMapping("/mgr/member/list.do")
+	public String mgr(Model model) throws Exception{
+		
+		return "/mgr/member-list";
+	}
+	
+	@RequestMapping("/mgr/member/view.do")
+	public String view(Model model) throws Exception{
+		
+		return "/mgr/member-view";
+	}
+	
 	@RequestMapping("/member/login.do")
 	public String login(Model model) throws Exception{
 		
@@ -70,6 +82,24 @@ public class MemberController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
 		resultMap = memberService.join(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/mgr/member/list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String List(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = memberService.memberList(map);
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/mgr/member/clear.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String clear(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap = memberService.cntClear(map);
 		
 		return new Gson().toJson(resultMap);
 	}

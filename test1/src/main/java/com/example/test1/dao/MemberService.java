@@ -1,6 +1,7 @@
 package com.example.test1.dao;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -20,15 +21,44 @@ public class MemberService {
 		HttpSession session;
 		
 		public HashMap<String, Object> login(HashMap<String, Object> map) {
+			String message = "";
+			String result = "fail";
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
-			Member member = memberMapper.memberLogin(map);
-			String message = member != null ? "로그인 성공~!" : "로그인 실패~!";
-			String result = member != null ? "success" : "fail";
-			
-			if(member != null) {
-				session.setAttribute("sessionId", member.getUserId());
-				session.setAttribute("sessionName", member.getName());
-				session.setAttribute("status", member.getStatus());
+			Member memberId = memberMapper.memberLoginId(map);
+			Member memberPwd = memberMapper.memberLoginPwd(map);
+			if(memberId == null) {
+				message = "아이디가 존재하지 않습니다";
+			}
+			else if(memberPwd == null) {
+				if(memberId.getCnt() >= 5) {
+					message = "비밀번호를 5회 이상 잘못 입력하셨습니다.";
+					memberMapper.cntUp(map);
+				}
+				else {
+					message = "패스워드를 확인해주세요";
+					memberMapper.cntUp(map);
+				}
+				
+			}
+			else {
+				if(memberId.getCnt() >=	 5) {
+					message = "비밀번호를 5회 이상 잘못 입력하셨습니다.";
+				}
+				else {
+					message = "로그인 성공";
+					result = "success"; 
+					memberMapper.cntZero(map);
+					session.setAttribute("sessionId", memberId.getUserId());
+					session.setAttribute("sessionName", memberId.getName());
+					session.setAttribute("status", memberId.getStatus());
+					if(memberId.getStatus().equals("A")) {
+						resultMap.put("url", "/mgr/member/list.do");
+					}
+					else {
+						resultMap.put("url", "/main.do");
+					}
+					
+				}
 			}
 			
 			resultMap.put("msg", message);
@@ -64,6 +94,32 @@ public class MemberService {
 			
 			resultMap.put("userId", map.get("userId"));	
 			resultMap.put("result","success");
+			
+			return resultMap;
+		}
+		
+		public HashMap<String, Object> memberList(HashMap<String, Object> map) {
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			try {
+				List<Member> member = memberMapper.memberList(map);
+				resultMap.put("list", member);
+				resultMap.put("result", "success");
+			} catch (Exception e) {
+				resultMap.put("result", "fail");
+				System.out.println(e.getMessage());
+			}
+			
+			
+			return resultMap;
+		}
+		
+		public HashMap<String, Object> cntClear(HashMap<String, Object> map) {
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			int cnt = memberMapper.cntZero(map);
+			
+			
+			
+			resultMap.put("result","success");	
 			
 			return resultMap;
 		}

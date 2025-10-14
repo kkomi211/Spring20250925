@@ -10,6 +10,23 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <title>상품 추가</title>
     <link rel="stylesheet" href="/css/product-style.css">
+    <style>
+        table, tr, td, th{
+            border : 1px solid black;
+            border-collapse: collapse;
+            padding : 5px 10px;
+            text-align: center;
+        }
+        th{
+            background-color: beige;
+        }
+        tr:nth-child(even){
+            background-color: azure;
+        }
+        table {
+            margin: 0px auto;
+        }
+    </style>
 </head>
 
 <body>
@@ -42,20 +59,39 @@
 
         <main>
             <div class="product-item">
-                <div>이름 : <input v-model="foodName"></div>
-                <div>종류 : 
-                    <select v-model="menuPart">
-                        <option value="10">한식</option>
-                        <option value="20">중식</option>
-                        <option value="30">양식</option>
-                        <option value="40">음료</option>
-                        <option value="50">디저트</option>
-                    </select>
-                </div>
-                <div>설명 : <input v-model="foodInfo"></div>
-                <div>가격 : <input v-model="price"></div>
-                <div>이미지 : <input type="file" id="file1" name="file1" accept=".jpg, .png"></div>
-                <button class="button" @click="fnAdd">상품 추가</button>
+                <table>
+                    <tr>
+                        <th>카테고리</th>
+                        <td>
+                            <select v-model="menuPart">
+                                <option v-for="item in menu" :value="item.menuNo">{{item.menuName}}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>제품번호</th>
+                        <td><input v-model="menuNo"></td>
+                    </tr>
+                    <tr>
+                        <th>음식이름</th>
+                        <td><input v-model="foodName"></td>
+                    </tr>
+                    <tr>
+                        <th>음식설명</th>
+                        <td>
+                            <textarea v-model="foodInfo" cols="25" rows="5"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>가격</th>
+                        <td><input v-model="price"></td>
+                    </tr>
+                    <tr>
+                        <th>이미지</th>
+                        <td><input type="file" id="file1" name="file1" accept=".jpg, .png"></td>
+                    </tr>
+                </table>
+                <button class="button" @click="fnAdd">제품 등록</button>
             </div>
         </main>
     </div>
@@ -69,10 +105,12 @@
                 search : "",
                 kind : "",
                 menuList : [],
-                foodName : "",
                 menuPart : 10,
+                menuNo : "",
+                foodName : "",
                 foodInfo : "",
-                price : 0
+                price : 0,
+                menu : []
             };
         },
         methods: {
@@ -104,10 +142,7 @@
                 self.fnList();
             },
             fnMain(){
-                let self = this;
-                self.search = "";
-                self.kind = "";
-                self.fnList();
+                location.href="/product.do";
             },
             fnAdd(){
                 let self = this;
@@ -115,7 +150,8 @@
                     foodName : self.foodName,
                     menuPart : self.menuPart,
                     foodInfo : self.foodInfo,
-                    price : self.price
+                    price : self.price,
+                    menuNo : self.menuNo
                 };
                 $.ajax({
                     url: "/product/add.dox",
@@ -125,15 +161,50 @@
                     success: function (data) {
                         console.log(data);
                         alert("추가되었습니다!");
-                        location.href="/product.do";
+                        var form = new FormData();
+                        form.append( "file1",  $("#file1")[0].files[0] );
+                        form.append( "foodNo",  data.foodNo); // 임시 pk
+                        self.upload(form);
+                        self.fnMain();
                         
                     }
+                });
+            },
+            fnMenuList(){
+                let self = this;
+                let param = {
+                    depth : 1
+                };
+                $.ajax({
+                    url: "/product/menu.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                        self.menu = data.menuList;
+                    }
+                });
+            },
+            upload : function(form){
+                var self = this;
+                $.ajax({
+                    url : "/food/fileUpload.dox"
+                , type : "POST"
+                , processData : false
+                , contentType : false
+                , data : form
+                , success:function(data) { 
+                    console.log(data);
+                    
+                }	           
                 });
             }
         },
         mounted() {
             var self = this;
             self.fnList();
+            self.fnMenuList();
         }
     });
     app.mount('#app');

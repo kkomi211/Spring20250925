@@ -16,6 +16,9 @@
 			AND (MENU_PART = #{kind}
 			OR MENU_NO = #{kind})
 			</if>
+			<if test="foodNo != null and foodNo != ''">
+			AND F.FOOD_NO = #{foodNo}
+			</if>
 	</select>
 	
 	<select id="selectMenuList" parameterType="hashmap" resultType="com.example.test1.model.Menu">
@@ -26,16 +29,36 @@
 		    FROM TBL_MENU
 		    GROUP BY MENU_PART
 		) T ON M.MENU_NO = T.MENU_PART
+		WHERE 1=1
+		<if test="depth != '' and depth != null">
+			AND DEPTH = #{depth}
+		</if>
 	</select>
 	
-	<insert id="insertProduct" parameterType="hashmap">
+	<insert id="insertProduct" parameterType="hashmap" useGeneratedKeys="true" keyColumn="FOOD_NO" keyProperty="foodNo">
 		INSERT INTO TBL_FOOD
 		VALUES (
 			FOOD_SEQ.NEXTVAL, #{foodName}, #{price}, 
 			<if test="menuPart == 10">'한식',</if>
 			<if test="menuPart == 20">'중식',</if>
 			<if test="menuPart == 30">'양식',</if>
-			#{foodInfo}, 'Y', '여기 해야댐 menu_no	', #{menuPart}
+			<if test="menuPart == 40">'디저트',</if>
+			<if test="menuPart == 50">'음료',</if>
+			
+			#{foodInfo}, 'Y', #{menuNo}, #{menuPart}
 		)
 	</insert>
+	
+	<insert id="insertFoodImg" parameterType="hashmap">
+		INSERT INTO TBL_FOOD_IMG
+		VALUES ( FOODFILE_SEQ.NEXTVAL, #{foodNo}, #{path}, #{fileName}, #{orgName}, #{size}, #{ext}, 'Y')
+	</insert>
+	
+	<insert id="insertMenu" parameterType="hashmap">
+		INSERT INTO TBL_MENU
+		VALUES ( #{menuNo}, #{foodName}, #{menuPart}, '2')
+	</insert>
+	
+	
+	
 </mapper>

@@ -38,7 +38,9 @@ public class ProductService {
 		// TODO Auto-generated method stub
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			int cnt = productMapper.insertProduct(map);
+			productMapper.insertMenu(map);
+			productMapper.insertProduct(map);
+			resultMap.put("foodNo", map.get("foodNo"));
 			resultMap.put("result", "success");
 		}catch(Exception e){
 			resultMap.put("result", "fail");
@@ -47,5 +49,28 @@ public class ProductService {
 		
 		return resultMap;
 	}
+
+	public HashMap<String, Object> getMenuList(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			List<Menu> menuList = productMapper.selectMenuList(map);
+			resultMap.put("menuList", menuList);
+			resultMap.put("result", "success");
+		} catch(Exception e) {
+			resultMap.put("result", "fail");
+			System.out.println(e.getMessage());
+		}
+		
+		return resultMap;
+	}
+	
+	public void addFoodImg(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		
+		int cnt = productMapper.insertFoodImg(map);
+		
+	}
+	
+	
 	
 }

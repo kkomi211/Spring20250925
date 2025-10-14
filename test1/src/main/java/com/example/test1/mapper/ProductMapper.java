@@ -16,4 +16,8 @@ public interface ProductMapper {
 	int insertProduct(HashMap<String, Object> map);
 	
 	List<Menu> selectMenuList(HashMap<String, Object> map);
+	
+	int insertFoodImg(HashMap<String, Object> map);
+	
+	int insertMenu(HashMap<String, Object> map);
 }

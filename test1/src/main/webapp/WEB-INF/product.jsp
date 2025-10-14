@@ -10,6 +10,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <title>쇼핑몰 헤더</title>
     <link rel="stylesheet" href="/css/product-style.css">
+    <script src="/js/page-change.js"></script>
 </head>
 
 <body>
@@ -43,7 +44,7 @@
         <main>
             <section class="product-list">
                 <!-- 제품 항목 -->
-                <div class="product-item" v-for="item in list">
+                <div class="product-item" v-for="item in list" @click="fnView(item.foodNo)">
                     <img :src="item.filePath" :alt="'제품 ' + item.foodNo">
                     <h3>{{item.foodName}}</h3>
                     <p>{{item.foodInfo}}</p>
@@ -101,6 +102,9 @@
             },
             fnAdd(){
                 location.href="/product/add.do"
+            },
+            fnView(foodNo){
+                pageChange("/product/view.do", {foodNo : foodNo});
             }
         },
         mounted() {

@@ -108,7 +108,7 @@
             upload : function(form){
                 var self = this;
                 $.ajax({
-                    url : "/fileUpload.dox"
+                    url : "/food/fileUpload.dox"
                 , type : "POST"
                 , processData : false
                 , contentType : false

@@ -11,6 +11,7 @@
         <title>상세 보기</title>
         <link rel="stylesheet" href="/css/product-style.css">
         <script src="/js/page-change.js"></script>
+        <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
         <style>
             table,
             tr,
@@ -30,7 +31,7 @@
                 background-color: azure;
             }
 
-            table{
+            table {
                 margin: 0px auto;
             }
         </style>
@@ -95,17 +96,23 @@
                             <td v-if="list.sellYN == 'Y'">구매 가능</td>
                             <td v-else>구매 불가</td>
                         </tr>
+                        <tr>
+                            <th>개수</th>
+                            <td><input v-model="num"></td>
+                        </tr>
                     </table>
+                    <button class="button" @click="fnPayment">주문하기</button>
                 </div>
                 <button class="button" @click="fnMain">돌아가기</button>
-
             </main>
-
         </div>
+
+
     </body>
 
     </html>
     <script>
+        IMP.init("imp28215630");
         const app = Vue.createApp({
             data() {
                 return {
@@ -113,7 +120,9 @@
                     search: "",
                     kind: "",
                     menuList: [],
-                    foodNo: "${foodNo}"
+                    foodNo: "${foodNo}",
+                    sessionId: "${sessionId}",
+                    num: 0
                 };
             },
             methods: {
@@ -146,8 +155,50 @@
                     self.fnList();
                 },
                 fnMain() {
-                    location.href = "/product.do"
+                    location.href = "/product.do";
+                },
+                fnPayment() {
+                    let self = this;
+                    IMP.request_pay({
+                        pg: "html5_inicis",
+                        pay_method: "card",
+                        merchant_uid: "merchant_" + new Date().getTime(),
+                        name: self.list.foodName,
+                        amount: 1, //self.info.price * self.num
+                        buyer_tel: "010-0000-0000",
+                    }	, function (rsp) { // callback
+                        if (rsp.success) {
+                            // 결제 성공 시
+                            alert("성공");
+                            console.log(rsp);
+                            self.fnPaymentHistory(rsp);
+                            self.fnMain();
+                        } else {
+                            // 결제 실패 시
+                            alert("실패");
+                        }
+                    });
+                },
+                fnPaymentHistory(rsp){
+                    let self = this;
+                    let param = {
+                        orderId : rsp.imp_uid,
+                        userId : self.sessionId,
+                        amount : rsp.paid_amount,
+                        productNo : self.foodNo
+                    };
+                    $.ajax({
+                        url: "/product/pay/history.dox",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (a) {
+                            console.log(a);
+                            
+                        }
+                    });
                 }
+                
             },
             mounted() {
                 var self = this;

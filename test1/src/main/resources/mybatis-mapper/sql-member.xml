@@ -24,9 +24,9 @@
 	
 	<insert id="memberJoin" parameterType="hashmap" useGeneratedKeys="true" keyColumn="USERID" keyProperty="userId">
 		INSERT INTO TBL_USER
-		VALUES (#{id}, #{pwd}, #{name}, NULL, NULL, NULL, #{addr}, #{phone}, NULL, #{gender}, #{status}, SYSDATE, SYSDATE)
+		VALUES (#{id}, #{hashPwd}, #{name}, NULL, NULL, NULL, #{addr}, #{phone}, NULL, #{gender}, #{status}, SYSDATE, SYSDATE, 0)
 	</insert>
-	
+		
 	<select id="memberList" parameterType="hashmap" resultType="com.example.test1.model.Member">
 		SELECT 
 			U.*, 
@@ -48,6 +48,21 @@
 	<update id="cntZero" parameterType="hashmap">
 		UPDATE TBL_USER
 		SET CNT = 0
+		WHERE USERID = #{id}
+	</update>
+	
+	<select id="memberAuth" parameterType="hashmap" resultType="com.example.test1.model.Member">
+		SELECT *
+		FROM TBL_USER
+		WHERE 
+			USERID = #{id}
+			AND NAME = #{name}
+			AND REPLACE(PHONE, '-', '') = REPLACE(#{phone}, '-', '') 
+	</select>
+	
+	<update id="updatePwd" parameterType="hashmap">
+		UPDATE TBL_USER
+		SET PASSWORD = #{hashPwd}
 		WHERE USERID = #{id}
 	</update>
 	

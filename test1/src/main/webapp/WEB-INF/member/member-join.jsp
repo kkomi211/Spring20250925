@@ -152,27 +152,27 @@
             },
             fnJoin: function () {
                 let self = this;
-                if(!self.flg){
-                    alert("아이디 중복체크를 해주세요!");
-                    return;
-                }
-                const pwdCheck = /^(?=.*[^a-zA-Z0-9]).{6,}$/;
-                if(!pwdCheck.test(self.pwd)){
-                    alert("비밀번호는 6자 이상, 특수문자가 하나이상 포함되어야합니다!")
-                    return;
-                }
-                if(self.pwd != self.pwd2){
-                    alert("비밀번호가 서로 다릅니다!");
-                    return;
-                }
-                if(self.name == ""){
-                    alert("이름을 입력해 주세요!");
-                    return;
-                }
-                if(self.addr == ""){
-                    alert("주소를 입력해 주세요!");
-                    return;
-                }
+                // if(!self.flg){
+                //     alert("아이디 중복체크를 해주세요!");
+                //     return;
+                // }
+                // const pwdCheck = /^(?=.*[^a-zA-Z0-9]).{6,}$/;
+                // if(!pwdCheck.test(self.pwd)){
+                //     alert("비밀번호는 6자 이상, 특수문자가 하나이상 포함되어야합니다!")
+                //     return;
+                // }
+                // if(self.pwd != self.pwd2){
+                //     alert("비밀번호가 서로 다릅니다!");
+                //     return;
+                // }
+                // if(self.name == ""){
+                //     alert("이름을 입력해 주세요!");
+                //     return;
+                // }
+                // if(self.addr == ""){
+                //     alert("주소를 입력해 주세요!");
+                //     return;
+                // }
                 
                 // if(!self.joinFlg){
                 //     alert("문자 인증을 해주세요");
@@ -199,7 +199,7 @@
 	                    form.append( "file1",  $("#file1")[0].files[0] );
                         form.append( "userId",  data.userId); // 임시 pk
                         self.upload(form);
-                        // location.href="/member/login.do"
+                        location.href="/member/login.do"
                         
                     }
                 });

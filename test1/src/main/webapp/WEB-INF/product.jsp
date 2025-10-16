@@ -44,7 +44,7 @@
         <main>
             <section class="product-list">
                 <!-- 제품 항목 -->
-                <div class="product-item" v-for="item in list" @click="fnView(item.foodNo)">
+                <div class="product-item" v-for="item in list" @click="fnView(item.foodNo)" style="cursor: pointer;">
                     <img :src="item.filePath" :alt="'제품 ' + item.foodNo">
                     <h3>{{item.foodName}}</h3>
                     <p>{{item.foodInfo}}</p>

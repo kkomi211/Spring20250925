@@ -59,6 +59,10 @@
 		VALUES ( #{menuNo}, #{foodName}, #{menuPart}, '2')
 	</insert>
 	
+	<insert id="insertPaymentHistory" parameterType="hashmap">
+		INSERT INTO PAYMENT_HISTORY
+		VALUES( #{orderId}, #{userId}, #{amount}, #{productNo}, SYSDATE)
+	</insert>
 	
 	
 </mapper>

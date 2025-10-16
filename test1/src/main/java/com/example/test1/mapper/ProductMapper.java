@@ -20,4 +20,6 @@ public interface ProductMapper {
 	int insertFoodImg(HashMap<String, Object> map);
 	
 	int insertMenu(HashMap<String, Object> map);
+	
+	int insertPaymentHistory(HashMap<String, Object> map);
 }

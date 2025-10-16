@@ -9,6 +9,7 @@ public class Board {
 	private String userId;
 	private String cnt;
 	private String contents;
+	private String contents2;
 	private String favorite;
 	private String kind;
 	private String cdate;

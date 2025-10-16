@@ -36,4 +36,6 @@ public interface BoardMapper {
 	
 	List<Board> selectFileList(HashMap<String, Object> map);
 	
+	
+	
 }

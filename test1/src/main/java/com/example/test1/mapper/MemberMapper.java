@@ -23,4 +23,8 @@ public interface MemberMapper {
 	int cntUp(HashMap<String, Object> map);
 	
 	int cntZero(HashMap<String, Object> map);
+	
+	Member memberAuth(HashMap<String, Object> map);
+	
+	int updatePwd(HashMap<String, Object> map);
 }

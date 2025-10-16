@@ -10,6 +10,7 @@ import com.example.test1.mapper.ProductMapper;
 import com.example.test1.model.Menu;
 import com.example.test1.model.Product;
 
+
 @Service
 public class ProductService {
 	
@@ -69,6 +70,23 @@ public class ProductService {
 		
 		int cnt = productMapper.insertFoodImg(map);
 		
+	}
+
+	public HashMap<String, Object> addPayHistory(HashMap<String, Object> map) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			int cnt = productMapper.insertPaymentHistory(map);
+			if(cnt > 0) {
+				resultMap.put("result", "success");
+			} else {
+				resultMap.put("result", "fail");
+			}
+		} catch(Exception e) {
+			resultMap.put("result", "fail");
+			System.out.println(e.getMessage());
+		}
+		
+		return resultMap;
 	}
 	
 	

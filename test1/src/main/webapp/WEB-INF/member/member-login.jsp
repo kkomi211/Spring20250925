@@ -34,6 +34,7 @@
         <div>
             <button @click="fnLogin">로그인</button>
             <button @click="fnJoin">회원가입</button>
+            <a href="/member/pwd.do"><button>비밀번호 찾기</button></a>
         </div>
     </div>
 </body>

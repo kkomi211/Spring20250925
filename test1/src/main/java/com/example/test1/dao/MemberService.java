@@ -6,19 +6,32 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import com.example.test1.controller.BoardController;
 import com.example.test1.mapper.MemberMapper;
 import com.example.test1.model.Member;
 
 @Service
 public class MemberService {
 
+    private final BoardController boardController;
+
 		@Autowired
 		MemberMapper memberMapper;
 		
 		@Autowired
+		PasswordEncoder passwordEncoder;
+		
+		@Autowired
 		HttpSession session;
+
+
+    MemberService(BoardController boardController) {
+        this.boardController = boardController;
+    }
+		
+		
 		
 		public HashMap<String, Object> login(HashMap<String, Object> map) {
 			String message = "";
@@ -26,10 +39,11 @@ public class MemberService {
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
 			Member memberId = memberMapper.memberLoginId(map);
 			Member memberPwd = memberMapper.memberLoginPwd(map);
+
 			if(memberId == null) {
 				message = "아이디가 존재하지 않습니다";
 			}
-			else if(memberPwd == null) {
+			else if(!passwordEncoder.matches((String) map.get("pwd"), memberId.getPassword())) {
 				if(memberId.getCnt() >= 5) {
 					message = "비밀번호를 5회 이상 잘못 입력하셨습니다.";
 					memberMapper.cntUp(map);
@@ -89,6 +103,8 @@ public class MemberService {
 		
 		public HashMap<String, Object> join(HashMap<String, Object> map) {
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			String hashPwd = passwordEncoder.encode((String) map.get("pwd"));
+			map.put("hashPwd", hashPwd);
 			int cnt = memberMapper.memberJoin(map);
 			System.out.println(map);
 			
@@ -108,8 +124,6 @@ public class MemberService {
 				resultMap.put("result", "fail");
 				System.out.println(e.getMessage());
 			}
-			
-			
 			return resultMap;
 		}
 		
@@ -120,6 +134,44 @@ public class MemberService {
 			
 			
 			resultMap.put("result","success");	
+			
+			return resultMap;
+		}
+		
+		public HashMap<String, Object> authId(HashMap<String, Object> map) {
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			try {
+				System.out.println(map.get("phone"));
+				Member member = memberMapper.memberAuth(map);
+				String result = member != null ? "success" : "fail";
+				resultMap.put("info", member);	
+				resultMap.put("result", result);
+			} catch(Exception e) {
+				resultMap.put("result", "fail");
+			}
+			
+			return resultMap;
+		}
+		
+		public HashMap<String, Object> updatePwd(HashMap<String, Object> map) {
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			try {
+				String hashPwd = passwordEncoder.encode((String) map.get("pwd"));
+				Member member = memberMapper.memberLoginId(map);
+				String result = "";
+				if(!passwordEncoder.matches((String) map.get("pwd"), member.getPassword())) {
+					map.put("hashPwd", hashPwd);
+					int cnt = memberMapper.updatePwd(map);
+					result = cnt != 0 ? "success" : "fail";
+				} else {
+					result = "same";
+					
+				}
+				
+				resultMap.put("result", result);
+			} catch(Exception e) {
+				resultMap.put("result", "fail");
+			}
 			
 			return resultMap;
 		}
